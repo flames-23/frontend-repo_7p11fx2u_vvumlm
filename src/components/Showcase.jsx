@@ -1,182 +1,162 @@
-import { motion } from 'framer-motion'
-import { ExternalLink, Tag } from 'lucide-react'
+import React from 'react';
+import { motion } from 'framer-motion';
+import { ExternalLink, Github } from 'lucide-react';
 
 const projects = [
   {
-    title: 'Demand Forecasting',
-    desc: 'Peramalan permintaan menggunakan LSTM untuk multi-outlet retail.',
-    img: 'https://images.unsplash.com/photo-1543286386-713bdd548da4?q=80&w=1600&auto=format&fit=crop',
-    tags: ['Python', 'LSTM', 'TensorFlow'],
-    url: '#'
-  },
-  {
-    title: 'Fraud Detection',
-    desc: 'Klasifikasi transaksi penipuan berbasis gradient boosting.',
-    img: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=1600&auto=format&fit=crop',
-    tags: ['XGBoost', 'ML'],
-    url: '#'
+    title: 'Demand Forecasting with LSTMs',
+    description:
+      'Built a sequence model to forecast weekly demand with exogenous features, improving MAPE by 18%.',
+    tags: ['Python', 'TensorFlow', 'Pandas', 'Timeseries'],
+    href: '#',
+    repo: '#',
   },
   {
     title: 'Customer Segmentation',
-    desc: 'Segmentasi pelanggan RFM dan clustering untuk kampanye efektif.',
-    img: 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=1600&auto=format&fit=crop',
-    tags: ['Python', 'KMeans', 'Analytics'],
-    url: '#'
+    description:
+      'Unsupervised pipeline for customer clustering; informed marketing strategy and uplift tests.',
+    tags: ['Python', 'Scikit-learn', 'EDA', 'Clustering'],
+    href: '#',
+    repo: '#',
   },
-]
+  {
+    title: 'Real-time A/B Dashboard',
+    description:
+      'Streaming analytics with experiment metrics, CIs, and sequential testing guards.',
+    tags: ['FastAPI', 'React', 'Websockets', 'Stats'],
+    href: '#',
+    repo: '#',
+  },
+];
+
+function Chip({ children }) {
+  return (
+    <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-xs text-white/70">
+      {children}
+    </span>
+  );
+}
+
+// Lightweight SVG charts (Line + Bar)
+function LineChart() {
+  const points = [
+    [0, 80],
+    [20, 60],
+    [40, 70],
+    [60, 45],
+    [80, 55],
+    [100, 30],
+  ];
+  const d = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p[0]} ${p[1]}`).join(' ');
+  return (
+    <svg viewBox="0 0 100 100" className="h-28 w-full">
+      <defs>
+        <linearGradient id="grad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#22d3ee" />
+          <stop offset="100%" stopColor="#a78bfa" />
+        </linearGradient>
+      </defs>
+      <path d={d} fill="none" stroke="url(#grad)" strokeWidth="2" />
+    </svg>
+  );
+}
+
+function BarChart() {
+  const bars = [35, 55, 45, 70, 52];
+  const width = 100 / bars.length;
+  return (
+    <svg viewBox="0 0 100 100" className="h-28 w-full">
+      <defs>
+        <linearGradient id="grad2" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#22d3ee" />
+          <stop offset="100%" stopColor="#a78bfa" />
+        </linearGradient>
+      </defs>
+      {bars.map((b, i) => (
+        <rect
+          key={i}
+          x={i * width + 6}
+          y={100 - b}
+          width={width - 12}
+          height={b}
+          rx="2"
+          fill="url(#grad2)"
+          opacity="0.85"
+        />
+      ))}
+    </svg>
+  );
+}
 
 function ProjectCard({ p }) {
   return (
-    <motion.a
-      href={p.url}
-      target="_blank"
-      rel="noreferrer"
-      whileHover={{ y: -6 }}
-      className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl"
+    <motion.div
+      whileHover={{ y: -4 }}
+      className="group rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md transition-shadow hover:shadow-lg hover:shadow-cyan-500/10"
     >
-      <div className="relative aspect-[16/10] overflow-hidden">
-        <img src={p.img} alt={p.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0b0b12] via-transparent to-transparent" />
-      </div>
-      <div className="p-5">
-        <h4 className="text-lg font-semibold text-white">{p.title}</h4>
-        <p className="mt-2 text-sm text-white/70">{p.desc}</p>
-        <div className="mt-3 flex flex-wrap items-center gap-2">
-          {p.tags.map((t) => (
-            <span key={t} className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/5 px-2 py-1 text-[11px] text-white/70">
-              <Tag className="h-3 w-3 text-cyan-300" /> {t}
-            </span>
-          ))}
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h3 className="text-lg font-semibold text-white">{p.title}</h3>
+          <p className="mt-1 text-sm text-white/70">{p.description}</p>
         </div>
-        <div className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-cyan-300">
-          Lihat Detail <ExternalLink className="h-4 w-4" />
+        <div className="flex items-center gap-2">
+          <a href={p.href} className="rounded-lg border border-white/10 p-2 text-white/80 hover:bg-white/10" aria-label="Live">
+            <ExternalLink className="h-4 w-4" />
+          </a>
+          <a href={p.repo} className="rounded-lg border border-white/10 p-2 text-white/80 hover:bg-white/10" aria-label="Repo">
+            <Github className="h-4 w-4" />
+          </a>
         </div>
       </div>
-    </motion.a>
-  )
-}
-
-// Simple interactive charts using SVG (no external deps)
-function LineChart({ data }) {
-  const padding = 24
-  const w = 520
-  const h = 220
-  const xStep = (w - padding * 2) / (data.length - 1)
-  const maxY = Math.max(...data.map(d => d.y))
-  const minY = Math.min(...data.map(d => d.y))
-  const yScale = (val) => {
-    const pct = (val - minY) / (maxY - minY || 1)
-    return h - padding - pct * (h - padding * 2)
-  }
-  const points = data.map((d, i) => `${padding + i * xStep},${yScale(d.y)}`).join(' ')
-
-  return (
-    <svg width={w} height={h} className="w-full">
-      <defs>
-        <linearGradient id="gradLine" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#22d3ee" />
-          <stop offset="100%" stopColor="#8b5cf6" />
-        </linearGradient>
-        <linearGradient id="gradFill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="rgba(34,211,238,0.35)" />
-          <stop offset="100%" stopColor="rgba(139,92,246,0.0)" />
-        </linearGradient>
-      </defs>
-      {/* Axes */}
-      <g opacity="0.25" stroke="white">
-        <line x1={padding} y1={h - padding} x2={w - padding} y2={h - padding} />
-        <line x1={padding} y1={padding} x2={padding} y2={h - padding} />
-      </g>
-      {/* Area */}
-      <polyline points={`${padding},${h - padding} ${points} ${w - padding},${h - padding}`} fill="url(#gradFill)" />
-      {/* Line */}
-      <polyline points={points} fill="none" stroke="url(#gradLine)" strokeWidth="3" />
-      {/* Dots */}
-      {data.map((d, i) => (
-        <g key={i}>
-          <circle cx={padding + i * xStep} cy={yScale(d.y)} r="4" fill="#22d3ee" />
-        </g>
-      ))}
-    </svg>
-  )
-}
-
-function BarChart({ data }) {
-  const padding = 24
-  const w = 520
-  const h = 220
-  const bw = (w - padding * 2) / data.length - 12
-  const maxY = Math.max(...data.map(d => d.y))
-  const yScale = (val) => {
-    const pct = val / (maxY || 1)
-    return pct * (h - padding * 2)
-  }
-
-  return (
-    <svg width={w} height={h} className="w-full">
-      <defs>
-        <linearGradient id="gradBar" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#22d3ee" />
-          <stop offset="100%" stopColor="#8b5cf6" />
-        </linearGradient>
-      </defs>
-      {/* Axis */}
-      <g opacity="0.25" stroke="white">
-        <line x1={padding} y1={h - padding} x2={w - padding} y2={h - padding} />
-      </g>
-      {data.map((d, i) => {
-        const x = padding + i * (bw + 12)
-        const barH = yScale(d.y)
-        return (
-          <g key={i}>
-            <rect x={x} y={h - padding - barH} width={bw} height={barH} rx="8" fill="url(#gradBar)" className="transition-all duration-300 hover:opacity-90" />
-          </g>
-        )
-      })}
-    </svg>
-  )
+      <div className="mt-3 flex flex-wrap gap-2">
+        {p.tags.map((t) => (
+          <Chip key={t}>{t}</Chip>
+        ))}
+      </div>
+    </motion.div>
+  );
 }
 
 export default function Showcase() {
-  const lineData = [
-    { x: 'Jan', y: 12 }, { x: 'Feb', y: 18 }, { x: 'Mar', y: 11 }, { x: 'Apr', y: 22 }, { x: 'Mei', y: 28 }, { x: 'Jun', y: 24 }
-  ]
-  const barData = [
-    { x: 'Seg A', y: 320 }, { x: 'Seg B', y: 220 }, { x: 'Seg C', y: 420 }, { x: 'Seg D', y: 260 }
-  ]
-
   return (
-    <section id="projects" className="w-full bg-[#0b0b12] py-24 text-white">
-      <div className="mx-auto max-w-7xl px-6 sm:px-10">
+    <section id="showcase" className="relative w-full bg-[#0b0b12] py-24 text-white">
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-fuchsia-500/5 to-transparent" />
+      <div className="relative mx-auto max-w-6xl px-6">
         <motion.h2
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
+          viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-3xl font-extrabold sm:text-4xl"
+          className="text-3xl font-bold sm:text-4xl"
         >
-          Proyek & Visualisasi
+          Showcase
         </motion.h2>
+        <p className="mt-3 max-w-3xl text-white/70">
+          Selected work across forecasting, experimentation, and analytics engineering.
+        </p>
 
-        {/* Projects grid */}
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {projects.map((p) => (
-            <ProjectCard key={p.title} p={p} />
-          ))}
-        </div>
-
-        {/* Data viz */}
-        <div id="dataviz" className="mt-16 grid gap-8 lg:grid-cols-2">
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
-            <div className="mb-3 text-sm font-medium text-white/70">Tren Penjualan</div>
-            <LineChart data={lineData} />
+        <div className="mt-10 grid gap-6 md:grid-cols-2">
+          <div className="grid gap-6">
+            {projects.slice(0, 2).map((p) => (
+              <ProjectCard key={p.title} p={p} />
+            ))}
           </div>
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
-            <div className="mb-3 text-sm font-medium text-white/70">Distribusi Segmen</div>
-            <BarChart data={barData} />
+          <div className="grid gap-6">
+            <ProjectCard p={projects[2]} />
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md">
+              <h3 className="text-lg font-semibold">Mini Charts</h3>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                <div className="rounded-xl border border-white/10 bg-[#0b0b12] p-3">
+                  <LineChart />
+                </div>
+                <div className="rounded-xl border border-white/10 bg-[#0b0b12] p-3">
+                  <BarChart />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </section>
-  )
+  );
 }
